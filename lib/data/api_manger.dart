@@ -14,6 +14,7 @@ abstract class ApiManger {
       Uri url = Uri.parse("$baseUrl/3/movie/popular?results&apiKey=$apiKey");
       Response response = await get(url);
       Map myBody = jsonDecode(response.body);
+      print(myBody["results"]);
       PopularResponse popularResponse = PopularResponse.fromJson(myBody);
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return popularResponse;
@@ -56,5 +57,4 @@ abstract class ApiManger {
       rethrow;
     }
   }
-
 }
