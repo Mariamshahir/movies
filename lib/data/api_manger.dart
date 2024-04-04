@@ -7,14 +7,17 @@ import 'package:test_movies/models/toprated_response.dart';
 abstract class ApiManger {
   static const String defaultErrorMessage = "Something went please again later";
   static const String baseUrl = "https://api.themoviedb.org";
-  static const String apiKey = "1774d0b466b8c9352154c7fb8434cfbc";
+  static const Map<String, String> header = {
+    "Authorization":
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNzc0ZDBiNDY2YjhjOTM1MjE1NGM3ZmI4NDM0Y2ZiYyIsInN1YiI6IjY2MGE4Y2I3ZDZkYmJhMDE3ZDZmOWQ0OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ULzKdEgHt1iA5RGl3XhYMa1jy72LOvaiu3-bViJJDmk",
+    "accept": "application/json"
+  };
 
   static Future<PopularResponse> loadpopularlist() async {
     try {
-      Uri url = Uri.parse("$baseUrl/3/movie/popular?results&apiKey=$apiKey");
-      Response response = await get(url);
+      Uri url = Uri.parse("$baseUrl/3/movie/popular");
+      Response response = await get(url, headers: header);
       Map myBody = jsonDecode(response.body);
-      print(myBody["results"]);
       PopularResponse popularResponse = PopularResponse.fromJson(myBody);
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return popularResponse;
@@ -28,9 +31,10 @@ abstract class ApiManger {
 
   static Future<UpcomingResponse> loadupcominglist() async {
     try {
-      Uri url = Uri.parse("$baseUrl/3/movie/upcoming?results&apiKey=$apiKey");
-      Response response = await get(url);
+      Uri url = Uri.parse("$baseUrl/3/movie/upcoming");
+      Response response = await get(url, headers: header);
       Map myBody = jsonDecode(response.body);
+//      print(myBody["results"]);
       UpcomingResponse upcomingResponse = UpcomingResponse.fromJson(myBody);
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return upcomingResponse;
@@ -44,8 +48,8 @@ abstract class ApiManger {
 
   static Future<TopratedResponse> loadtopratedlist() async {
     try {
-      Uri url = Uri.parse("$baseUrl/3/movie/top_rated?results&apiKey=$apiKey");
-      Response response = await get(url);
+      Uri url = Uri.parse("$baseUrl/3/movie/top_rated");
+      Response response = await get(url, headers: header);
       Map myBody = jsonDecode(response.body);
       TopratedResponse topratedResponse = TopratedResponse.fromJson(myBody);
       if (response.statusCode >= 200 && response.statusCode < 300) {
