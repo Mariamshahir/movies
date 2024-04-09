@@ -7,6 +7,7 @@ import 'package:test_movies/utils/colors_app.dart';
 import 'package:test_movies/utils/theme_app.dart';
 import 'package:test_movies/widgets/app_error.dart';
 import 'package:test_movies/widgets/lodding_app.dart';
+import 'package:test_movies/widgets/movie_details_widget/movie_details_widget/itemgenres.dart';
 
 class MovieDetails extends StatefulWidget {
   final int movieId;
@@ -118,6 +119,12 @@ class _MovieDetailsState extends State<MovieDetails> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
+                                  Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.07,
+                                      child:
+                                          ItemGenres(movieId: widget.movieId)),
                                   Text(
                                     movie.overview ?? '',
                                     style: AppTheme.tagline,

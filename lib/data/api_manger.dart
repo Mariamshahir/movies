@@ -13,6 +13,7 @@ abstract class ApiManger {
         "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNzc0ZDBiNDY2YjhjOTM1MjE1NGM3ZmI4NDM0Y2ZiYyIsInN1YiI6IjY2MGE4Y2I3ZDZkYmJhMDE3ZDZmOWQ0OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ULzKdEgHt1iA5RGl3XhYMa1jy72LOvaiu3-bViJJDmk",
     "accept": "application/json"
   };
+
   static Future<GeneralResponse> loadPopularList() async {
     try {
       Uri url = Uri.parse("$baseUrl/3/movie/popular");
