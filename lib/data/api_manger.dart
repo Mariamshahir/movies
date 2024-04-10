@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:test_movies/models/categories_response.dart';
+import 'package:test_movies/models/discover_response.dart';
 import 'package:test_movies/models/general_movie_response.dart';
 import 'package:test_movies/models/movie_response.dart';
 
@@ -64,7 +66,7 @@ abstract class ApiManger {
 
   static Future<MovieResponse> loadDetailsList(int movieId) async {
     try {
-      Uri url = Uri.parse("$baseUrl/3/movie/157336?id=$movieId");
+      Uri url = Uri.parse("$baseUrl/3/movie/$movieId");
       Response response = await get(url, headers: header);
       Map myBody = jsonDecode(response.body);
       MovieResponse movieResponse = MovieResponse.fromJson(myBody);
@@ -88,6 +90,39 @@ abstract class ApiManger {
         return similarResponse;
       } else {
         throw similarResponse.statusMessage ?? defaultErrorMessage;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<CategoriesResponse> loadCategoriesList() async {
+    try {
+      Uri url = Uri.parse("$baseUrl/3/genre/movie/list");
+      Response response = await get(url, headers: header);
+      Map myBody = jsonDecode(response.body);
+      CategoriesResponse categoriesResponse =
+          CategoriesResponse.fromJson(myBody);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return categoriesResponse;
+      } else {
+        throw categoriesResponse.statusMessage ?? defaultErrorMessage;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<DiscoverResponse> loadMoviesForCategory(int categoryId) async {
+    try {
+      Uri url = Uri.parse("$baseUrl/3/discover/movie?with_genres=$categoryId");
+      Response response = await get(url, headers: header);
+      Map myBody = jsonDecode(response.body);
+      DiscoverResponse discoverResponse = DiscoverResponse.fromJson(myBody);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return discoverResponse;
+      } else {
+        throw discoverResponse.statusMessage ?? defaultErrorMessage;
       }
     } catch (e) {
       rethrow;
