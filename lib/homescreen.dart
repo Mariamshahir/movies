@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:test_movies/tabs/browse.dart';
 import 'package:test_movies/tabs/home.dart';
-import 'package:test_movies/tabs/show_movies/show_movies.dart';
 import 'package:test_movies/tabs/watchlist.dart';
 import 'package:test_movies/utils/colors_app.dart';
+
+import 'tabs/show_movies/show_movies.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "homescreen";
@@ -17,9 +18,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndexTab = 0;
   List<Widget> bodyContent = [
-    HomeTab(),
+    const HomeTab(),
     ShowMovies(),
-    BrowseTab(),
+    const BrowseTab(),
     WatchListTab(),
   ];
 
