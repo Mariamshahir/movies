@@ -32,6 +32,11 @@ abstract class AppTheme {
     fontWeight: FontWeight.w400,
     color: AppColors.gray,
   );
+  static const TextStyle titleCategory = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.white,
+  );
 
   static ThemeData lightTheme = ThemeData(
       primaryColor: Colors.black,
