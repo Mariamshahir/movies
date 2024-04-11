@@ -1,21 +1,12 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
-import 'package:test_movies/models/movie_dm.dart';
-class FirebaseUtils {
+import 'package:test_movies/models/film.dart';
 
+class FirebaseUtils {
   static CollectionReference getFilmCollection() {
     return FirebaseFirestore.instance.collection('films');
   }
-
-  // static Future<DocumentReference> addFilmToFirestore(Map<String, dynamic> filmData) async {
-  //   CollectionReference filmsCollection = getFilmCollection();
-  //
-  //   DocumentReference newDocRef = await filmsCollection.add(filmData);
-  //
-  //   await newDocRef.update({'id': newDocRef.id});
-  //
-  //   return newDocRef;  }
 
   static Future<void> deleteFilm(String filmId) async {
     try {
@@ -26,7 +17,9 @@ class FirebaseUtils {
       throw e;
     }
   }
-  static Future<void> storeDataInFirestore(Map<String, dynamic> filmsData) async {
+
+  static Future<void> storeDataInFirestore(
+      Map<String, dynamic> filmsData) async {
     try {
       await getFilmCollection().doc('movies').set(filmsData);
       print('Data stored successfully in Firestore');
@@ -38,12 +31,19 @@ class FirebaseUtils {
 
   static Future<void> fetchAndStoreDataFromAPIs() async {
     try {
-      var popularData = await fetchDataFromAPI('https://api.themoviedb.org/3/movie/popular');
-      var upcomingData = await fetchDataFromAPI('https://api.themoviedb.org/3/movie/upcoming');
-      var topRatedData = await fetchDataFromAPI('https://api.themoviedb.org/3/movie/top_rated');
-      var similarData = await fetchDataFromAPI('https://api.themoviedb.org/3/movie/{movie_id}/similar');
-      var processedData = processData(popularData, upcomingData, topRatedData, similarData);
-      await storeDataInFirestore(processedData);
+      var popularData =
+          await fetchDataFromAPI('https://api.themoviedb.org/3/movie/popular');
+      var upcomingData =
+          await fetchDataFromAPI('https://api.themoviedb.org/3/movie/upcoming');
+      var topRatedData = await fetchDataFromAPI(
+          'https://api.themoviedb.org/3/movie/top_rated');
+      var similarData = await fetchDataFromAPI(
+          'https://api.themoviedb.org/3/movie/{movie_id}/similar');
+      var processedData =
+          processData(popularData, upcomingData, topRatedData, similarData);
+      await Future.forEach(processedData.entries, (entry) async {
+        await addFilmToFirestore(entry.value);
+      });
     } catch (e) {
       print('Error fetching and storing data: $e');
       throw e;
@@ -65,16 +65,21 @@ class FirebaseUtils {
     }
   }
 
-  static Map<String, dynamic> processData(Map<String, dynamic> popularData, Map<String, dynamic> upcomingData, Map<String, dynamic> topRatedData, Map<String, dynamic> similarData) {
+  static Map<String, dynamic> processData(
+      Map<String, dynamic> popularData,
+      Map<String, dynamic> upcomingData,
+      Map<String, dynamic> topRatedData,
+      Map<String, dynamic> similarData) {
     Map<String, dynamic> combinedData = {
       'popular': popularData,
       'upcoming': upcomingData,
       'topRated': topRatedData,
-      'similar':similarData
+      'similar': similarData
     };
 
     return combinedData;
   }
+
   static Future<String?> getFilmId(String filmTitle) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -93,14 +98,14 @@ class FirebaseUtils {
     }
   }
 
-  static Future<List<MovieDM>> getAllMoviesFromFirestore() async {
+  static Future<List<Film>> getAllMoviesFromFirestore() async {
     try {
       QuerySnapshot querySnapshot = await getFilmCollection().get();
 
-      List<MovieDM> movies = querySnapshot.docs.map((doc) {
+      List<Film> movies = querySnapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         data['id'] = doc.id;
-        return MovieDM.fromJson(data);
+        return Film.fromJson(data);
       }).toList();
 
       return movies;
@@ -109,16 +114,19 @@ class FirebaseUtils {
       throw Exception('Failed to fetch movies from Firestore');
     }
   }
-  static Future<DocumentReference> addFilmToFirestore(Map<String, dynamic> filmData) async {
+
+  static Future<DocumentReference> addFilmToFirestore(
+      Map<String, dynamic> filmData) async {
     CollectionReference filmsCollection = getFilmCollection();
 
     // Add the film data to Firestore and get the reference
     DocumentReference newDocRef = await filmsCollection.add(filmData);
 
     // Update the document with its ID
-    await newDocRef.update({'id': newDocRef.id,});
+    await newDocRef.update({
+      'id': newDocRef.id,
+    });
 
     return newDocRef;
   }
-
 }

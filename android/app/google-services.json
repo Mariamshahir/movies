@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "97592888075",
+    "project_id": "movie-app-abbff",
+    "storage_bucket": "movie-app-abbff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97592888075:android:63ea7d311561ae49c2700e",
+        "android_client_info": {
+          "package_name": "com.example.test_movies"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmT7-BnhZnI4vKZ-GOEJdHmrAGvckcx0A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
