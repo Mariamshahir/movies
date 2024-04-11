@@ -1,10 +1,22 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:test_movies/firebase/firebase.dart';
+import 'package:test_movies/firebase/list_firebase.dart';
 import 'package:test_movies/homescreen.dart';
 import 'package:test_movies/splash.dart';
 import 'package:test_movies/utils/theme_app.dart';
 import 'package:test_movies/widgets/movie_details_widget/movie_view_widget.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyCmT7-BnhZnI4vKZ-GOEJdHmrAGvckcx0A",
+          appId: "movie-app-abbff",
+          messagingSenderId: "movie-app-abbff",
+          projectId: "movie-app-abbff"));
+
   runApp(MyApp());
 }
 
