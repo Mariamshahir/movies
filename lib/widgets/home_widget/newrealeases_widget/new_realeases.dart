@@ -74,12 +74,9 @@ class _NewRealeasesState extends State<NewRealeases> {
         Navigator.pushNamed(context, MovieView.routeName, arguments: result);
       },
       child: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width * 0.23,
+        width: MediaQuery.of(context).size.width * 0.23,
         child:
-        Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Center(
             child: Stack(
               children: [
@@ -87,7 +84,7 @@ class _NewRealeasesState extends State<NewRealeases> {
                   borderRadius: BorderRadius.circular(4),
                   child: CachedNetworkImage(
                     imageUrl:
-                    'https://image.tmdb.org/t/p/w500${result.posterPath ?? ''}',
+                        'https://image.tmdb.org/t/p/w500${result.posterPath ?? ''}',
                     height: MediaQuery.of(context).size.height * 0.15,
                     alignment: Alignment.center,
                     placeholder: (_, __) => const Center(
@@ -110,22 +107,28 @@ class _NewRealeasesState extends State<NewRealeases> {
     );
   }
 
-  Positioned buildIcon(MovieDM movie) { // Accept MovieDM as an argument
+  Positioned buildIcon(MovieDM movie) {
     return Positioned(
       right: 65,
       bottom: 110,
       child: InkWell(
         onTap: () {
-          _toggleBookmark(movie); // Pass the movie when tapped
+          toggleBookmark(movie);
         },
         child: isBookmarked
-            ? Icon(Icons.bookmark_add, color: AppColors.selectIcon,)
-            : Icon(Icons.bookmark_add, color: AppColors.bookMark,),
+            ? const Icon(
+                Icons.bookmark_add,
+                color: AppColors.selectIcon,
+              )
+            : const Icon(
+                Icons.bookmark_add,
+                color: AppColors.bookMark,
+              ),
       ),
     );
   }
 
-  void _toggleBookmark(MovieDM movie) {
+  void toggleBookmark(MovieDM movie) {
     setState(() {
       isBookmarked = !isBookmarked;
 
