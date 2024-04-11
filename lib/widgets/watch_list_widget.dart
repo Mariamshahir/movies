@@ -71,7 +71,7 @@ class _WatchListWidgetState extends State<WatchListWidget> {
     );
   }
 
-  Positioned buildIcon(Film film) { // Change the argument type to Film
+  Positioned buildIcon(Film film) {
     return Positioned(
         left: 10,
         bottom: 53,
