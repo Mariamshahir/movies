@@ -18,10 +18,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndexTab = 0;
   List<Widget> bodyContent = [
-    HomeTab(),
+    const HomeTab(),
     ShowMovies(),
-    BrowseTab(),
-    WatchListTab(),
+    const BrowseTab(),
+    const WatchListTab(),
   ];
 
   @override
