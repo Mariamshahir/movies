@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:test_movies/models/one_movie_dm.dart';
+import 'package:test_movies/models/movie_dm.dart';
 import 'package:test_movies/utils/colors_app.dart';
 import 'package:test_movies/utils/theme_app.dart';
 
 class ShowOneMovie extends StatelessWidget {
-  final OneMovieDM movie;
+  final MovieDM movie;
 
   const ShowOneMovie({Key? key, required this.movie}) : super(key: key);
 
@@ -20,7 +20,7 @@ class ShowOneMovie extends StatelessWidget {
             child: Row(
               children: [
                 Image.network(
-                  movie.backdropPath,
+                  movie.backdropPath!,
                   width: MediaQuery.of(context).size.width * 0.4,
                   height: MediaQuery.of(context).size.width * 0.5,
                 ),
@@ -29,15 +29,15 @@ class ShowOneMovie extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      movie.title,
+                      movie.title!,
                       style: AppTheme.movieTitle.copyWith(fontSize: 20),
                     ),
                     Text(
-                      movie.releaseDate,
+                      movie.releaseDate!,
                       style: AppTheme.time.copyWith(fontSize: 15),
                     ),
                     Text(
-                      movie.author,
+                      movie.originalTitle!,
                       style: AppTheme.time.copyWith(fontSize: 15),
                     ),
                   ],

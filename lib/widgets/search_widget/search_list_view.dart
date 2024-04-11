@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:test_movies/models/one_movie_dm.dart';
+import 'package:test_movies/models/movie_dm.dart';
 import 'package:test_movies/tabs/show_movies/show_one_movie.dart';
+import 'package:test_movies/widgets/movie_details_widget/movie_view_widget.dart';
 
 class SearchListView extends StatefulWidget {
-  List<OneMovieDM> searchResults = [];
+  List<MovieDM> searchResults = [];
 
 
   SearchListView({super.key, required this.searchResults});
@@ -21,8 +22,11 @@ class _SearchListViewState extends State<SearchListView> {
           child: ListView.builder(
             itemCount: widget.searchResults.length,
             itemBuilder: (context, index) {
-              return ShowOneMovie(movie: widget.searchResults[index]);
-              //Text(widget.searchResults[index]);
+              return InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, MovieView.routeName, arguments: widget.searchResults[index],);
+                  },
+                  child: ShowOneMovie(movie: widget.searchResults[index]));
             },
           ),
         ),
@@ -30,9 +34,4 @@ class _SearchListViewState extends State<SearchListView> {
     );
   }
 
-// static List<String> allTitles = [];
-// void getTitlesList(){
-//   for(Results result in widget.resultsList){
-//     allTitles.add(result.originalTitle!.toLowerCase());
-//   }
 }

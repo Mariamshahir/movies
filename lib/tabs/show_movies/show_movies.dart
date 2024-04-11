@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_movies/data/api_manger.dart';
 import 'package:test_movies/models/movie_dm.dart';
-import 'package:test_movies/models/one_movie_dm.dart';
 import 'package:test_movies/widgets/search_widget/search_home.dart';
 
 class ShowMovies extends StatelessWidget {
@@ -43,27 +42,19 @@ class ShowMovies extends StatelessWidget {
     );
   }
 
-  List<OneMovieDM> getMoviesList() {
-    List<OneMovieDM> allMovies = [];
+  List<MovieDM> getMoviesList() {
+    List<MovieDM> allMovies = [];
 
     for (MovieDM result in resultsList) {
-      OneMovieDM movieDM = OneMovieDM(
+      MovieDM movie = MovieDM(
           backdropPath: "https://image.tmdb.org/t/p/original" + result.backdropPath!,
           title: result.title!,
           releaseDate: result.releaseDate!,
-          author: result.originalTitle!);
+          originalTitle: result.originalTitle!);
 
-      allMovies.add(movieDM);
+      allMovies.add(movie);
     }
     return allMovies;
   }
-// List<String> getTitlesList() {
-//   List<String> allTitles = [];
-//   print("------------------------------------");
-//   print(resultsList);
-//   for (Results result in resultsList) {
-//     allTitles.add(result.originalTitle!.toLowerCase());
-//   }
-//   return allTitles;
-// }
+
 }

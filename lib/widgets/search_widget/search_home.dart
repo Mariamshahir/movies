@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:test_movies/models/one_movie_dm.dart';
+import 'package:test_movies/models/movie_dm.dart';
 import 'package:test_movies/utils/colors_app.dart';
 import 'package:test_movies/widgets/search_widget/search_list_view.dart';
 
 class SearchHome extends StatefulWidget {
   static const routeName = "search_home";
-  List<OneMovieDM> allMovies;
+  List<MovieDM> allMovies;
 
   SearchHome({super.key, required this.allMovies});
 
@@ -26,7 +26,8 @@ class _SearchHomeState extends State<SearchHome> {
           backgroundColor: Colors.black,
           title: Container(
             margin: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height * .2,),
+              vertical: MediaQuery.of(context).size.height * .2,
+            ),
             height: MediaQuery.of(context).size.height * .07,
             width: double.infinity,
             decoration: BoxDecoration(
@@ -59,8 +60,8 @@ class _SearchHomeState extends State<SearchHome> {
                         controller = TextEditingController();
                         setState(() {});
                       },
-                      icon:
-                          const Icon(Icons.close_outlined, color: AppColors.white),
+                      icon: const Icon(Icons.close_outlined,
+                          color: AppColors.white),
                     )),
               ),
             ),
@@ -82,19 +83,15 @@ class _SearchHomeState extends State<SearchHome> {
   }
 
   List<String> searchResults = [];
-  List<OneMovieDM> moviesSearchResults = [];
+  List<MovieDM> moviesSearchResults = [];
 
   void onQueryChanged(String searchWord) {
     widget.selectedWidget = false;
-    for (OneMovieDM movieDM in widget.allMovies) {
-      if (movieDM.title.contains(searchWord.toLowerCase())) {
+    for (MovieDM movieDM in widget.allMovies) {
+      if (movieDM.title!.contains(searchWord.toLowerCase())) {
         moviesSearchResults.add(movieDM);
       }
     }
-
-    // searchResults = widget.allTitles
-    //     .where((title) => title!.contains(searchWord.toLowerCase()))
-    //     .toList();
 
     SearchListView(searchResults: moviesSearchResults);
     setState(() {});
