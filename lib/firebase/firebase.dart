@@ -8,9 +8,9 @@ class FirebaseUtils {
     return FirebaseFirestore.instance.collection('films');
   }
 
-  static Future<void> deleteFilm(String filmId) async {
+  static Future<void> deleteFilm(String id) async {
     try {
-      await getFilmCollection().doc(filmId).delete();
+      await getFilmCollection().doc(id).delete();
       print('Film deleted successfully');
     } catch (e) {
       print('Error deleting film: $e');
