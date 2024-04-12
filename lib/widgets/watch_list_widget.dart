@@ -16,13 +16,12 @@ class WatchListWidget extends StatefulWidget {
 }
 
 class _WatchListWidgetState extends State<WatchListWidget> {
-  bool isBookmarked = false;
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, MovieView.routeName, arguments: widget.result);
+        Navigator.pushNamed(context, MovieView.routeName,
+            arguments: widget.result);
       },
       child: Row(
         children: [
@@ -30,7 +29,7 @@ class _WatchListWidgetState extends State<WatchListWidget> {
             children: [
               CachedNetworkImage(
                 imageUrl:
-                'https://image.tmdb.org/t/p/w500${widget.result.backdropPath ?? ''}',
+                    'https://image.tmdb.org/t/p/w500${widget.result.backdropPath ?? ''}',
                 width: MediaQuery.of(context).size.width * 0.5,
                 height: MediaQuery.of(context).size.height * 0.1,
                 alignment: Alignment.center,
@@ -44,7 +43,8 @@ class _WatchListWidgetState extends State<WatchListWidget> {
                   color: Colors.red,
                 ),
               ),
-              buildIcon(widget.result) // Pass widget.result to buildIcon function
+              buildIcon(widget.result)
+              // Pass widget.result to buildIcon function
             ],
           ),
           Expanded(
@@ -86,9 +86,9 @@ class _WatchListWidgetState extends State<WatchListWidget> {
 
   void toggleBookmark(Film film) {
     setState(() {
-      isBookmarked = !isBookmarked;
-      if (isBookmarked) {
-        String filmTitle = film.title ?? "";
+      widget.result.video = !widget.result.video;
+      if (widget.result.video) {
+        String filmTitle = widget.result.title ?? "";
         FirebaseUtils.getFilmId(filmTitle).then((filmId) {
           if (filmId != null) {
             FirebaseUtils.deleteFilm(filmId).then((value) {
