@@ -25,10 +25,11 @@ class _SearchHomeState extends State<SearchHome> {
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Container(
+            //padding: EdgeInsets.all(10),
             margin: EdgeInsets.symmetric(
               vertical: MediaQuery.of(context).size.height * .2,
             ),
-            height: MediaQuery.of(context).size.height * .07,
+            height: MediaQuery.of(context).size.height * .06,
             width: double.infinity,
             decoration: BoxDecoration(
                 color: AppColors.search,
