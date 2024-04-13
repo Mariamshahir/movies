@@ -11,7 +11,7 @@ import 'package:test_movies/widgets/lodding_app.dart';
 import 'package:test_movies/widgets/movie_details_widget/movie_view_widget.dart';
 
 class MoreLikeThisSection extends StatefulWidget {
-  const MoreLikeThisSection({super.key});
+  const MoreLikeThisSection({Key? key});
 
   @override
   State<MoreLikeThisSection> createState() => _MoreLikeThisSectionState();
@@ -19,6 +19,8 @@ class MoreLikeThisSection extends StatefulWidget {
 
 class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
   bool isBookmarked = false;
+  Map<int, bool> bookmarkStatus = {};
+  List<MovieDM>? results;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,8 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
           return const AppError(
               error: "Something wrong please try again later");
         } else if (snapshot.hasData) {
-          return moreLikeList(snapshot.data!.results!);
+          results = snapshot.data!.results;
+          return moreLikeList(results!);
         } else {
           return const LoaddingApp();
         }
@@ -59,7 +62,7 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(right: 14),
-                    child: moreLike(context, results[index]),
+                    child: moreLike(context, results[index], index),
                   );
                 },
               ),
@@ -70,7 +73,7 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
     );
   }
 
-  Widget moreLike(BuildContext context, MovieDM result) {
+  Widget moreLike(BuildContext context, MovieDM result, int index) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, MovieView.routeName, arguments: result);
@@ -96,9 +99,7 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
                       height: MediaQuery.of(context).size.height * 0.15,
                       alignment: Alignment.center,
                       placeholder: (_, __) => const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.blue,
-                        ),
+                        child: CircularProgressIndicator(color: Colors.blue),
                       ),
                       errorWidget: (_, __, ___) => const Icon(
                         Icons.image_not_supported_outlined,
@@ -106,46 +107,50 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
                       ),
                     ),
                   ),
-                  buildIcon(result),
+                  buildIcon(index),
                 ],
               ),
             ),
-            ItemsRecommended(result: result)
+            ItemsRecommended(result: result),
           ],
         ),
       ),
     );
   }
 
-  Positioned buildIcon(MovieDM movie) {
+  Positioned buildIcon(int index) {
     return Positioned(
       right: 60,
-      bottom: 100,
+      bottom: 105,
       child: InkWell(
         onTap: () {
-          toggleBookmark(movie);
+          toggleBookmark(index);
         },
-        child: isBookmarked
+        child: bookmarkStatus[index] ?? false
             ? const Icon(
-          Icons.bookmark_add,
-          color: AppColors.selectIcon,
-          size: 30,
-        )
+                Icons.bookmark_add,
+                color: AppColors.selectIcon,
+                size: 30,
+              )
             : const Icon(
-          Icons.bookmark_add,
-          color: AppColors.bookMark,
-          size: 30,
-        ),
+                Icons.bookmark_add,
+                color: AppColors.bookMark,
+                size: 30,
+              ),
       ),
     );
   }
 
-  void toggleBookmark(MovieDM movie) {
+  void toggleBookmark(int index) {
     setState(() {
-      isBookmarked = !isBookmarked;
-
-      if (isBookmarked) {
-        FirebaseUtils.addFilmToFirestore(movie.toJson()).then((value) {
+      bookmarkStatus.update(
+        index,
+        (value) => !(value ?? false),
+        ifAbsent: () => true,
+      );
+      final movie = results?[index];
+      if (bookmarkStatus[index] ?? false) {
+        FirebaseUtils.addFilmToFirestore(movie!.toJson()).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Film Added Successfully to Watchlist.'),
@@ -160,7 +165,7 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
           );
         });
       } else {
-        String filmTitle = movie.title ?? "";
+        String filmTitle = movie?.title ?? "";
         FirebaseUtils.getFilmId(filmTitle).then((filmId) {
           if (filmId != null) {
             FirebaseUtils.deleteFilm(filmId).then((value) {
@@ -180,5 +185,4 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
       }
     });
   }
-
 }
