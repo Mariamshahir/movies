@@ -19,6 +19,8 @@ class Recommended extends StatefulWidget {
 
 class _RecommendedState extends State<Recommended> {
   bool isBookmarked = false;
+  Map<int, bool> bookmarkStatus = {};
+  List<MovieDM>? results;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class _RecommendedState extends State<Recommended> {
           return const AppError(
               error: "Something wrong please try again later");
         } else if (snapshot.hasData) {
+          results = snapshot.data!.results;
           return recommendedList(snapshot.data!.results!);
         } else {
           return const LoaddingApp();
@@ -57,7 +60,7 @@ class _RecommendedState extends State<Recommended> {
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 14),
-                  child: recommended(context, results[index]),
+                  child: recommended(context, results[index], index),
                 );
               },
             ),
@@ -67,7 +70,7 @@ class _RecommendedState extends State<Recommended> {
     );
   }
 
-  Widget recommended(BuildContext context, MovieDM result) {
+  Widget recommended(BuildContext context, MovieDM result, int index) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, MovieView.routeName, arguments: result);
@@ -101,7 +104,7 @@ class _RecommendedState extends State<Recommended> {
                     ),
                   ),
                 ),
-                buildIcon(result),
+                buildIcon(index),
               ],
             ),
           ),
@@ -111,15 +114,15 @@ class _RecommendedState extends State<Recommended> {
     );
   }
 
-  Positioned buildIcon(MovieDM movie) {
+  Positioned buildIcon(int index) {
     return Positioned(
       right: 65,
       bottom: 110,
       child: InkWell(
         onTap: () {
-          toggleBookmark(movie);
+          toggleBookmark(index);
         },
-        child: isBookmarked
+        child: bookmarkStatus[index] ?? false
             ? const Icon(
                 Icons.bookmark_add,
                 color: AppColors.selectIcon,
@@ -132,42 +135,37 @@ class _RecommendedState extends State<Recommended> {
     );
   }
 
-  void toggleBookmark(MovieDM movie) {
+  void toggleBookmark(int index) {
     setState(() {
-      isBookmarked = !isBookmarked;
-
-      if (isBookmarked) {
-        FirebaseUtils.addFilmToFirestore(movie.toJson()).then((value) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Film Added Successfully to Watchlist.'),
-              ),
-            );
-          }
+      bookmarkStatus.update(index, (value) => !(value ?? false),
+          ifAbsent: () => true);
+      final movie = results?[index];
+      if (bookmarkStatus[index] ?? false) {
+        FirebaseUtils.addFilmToFirestore(movie!.toJson()).then((value) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Film Added Successfully to Watchlist.'),
+            ),
+          );
         }).catchError((error) {
           print('Error adding film to Firestore: $error');
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Failed to add film.'),
-              ),
-            );
-          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to add film.'),
+            ),
+          );
         });
       } else {
-        String filmTitle = movie.title ?? "";
+        String filmTitle = movie?.title ?? "";
         FirebaseUtils.getFilmId(filmTitle).then((filmId) {
           if (filmId != null) {
             FirebaseUtils.deleteFilm(filmId).then((value) {
               print('Film Deleted Successfully');
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Film Removed Successfully.'),
-                  ),
-                );
-              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Film Removed Successfully.'),
+                ),
+              );
             }).catchError((error) {
               print('Error deleting film: $error');
             });

@@ -19,7 +19,8 @@ class NewRealeases extends StatefulWidget {
 }
 
 class _NewRealeasesState extends State<NewRealeases> {
-  bool isBookmarked = false;
+  Map<int, bool> bookmarkStatus = {};
+  List<MovieDM>? results;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +29,11 @@ class _NewRealeasesState extends State<NewRealeases> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const AppError(
-              error: "Something wrong please try again later");
+            error: "Something wrong please try again later",
+          );
         } else if (snapshot.hasData) {
-          return newRealeasesList(snapshot.data!.results!);
+          results = snapshot.data!.results;
+          return newRealeasesList(results!);
         } else {
           return const LoaddingApp();
         }
@@ -56,9 +59,11 @@ class _NewRealeasesState extends State<NewRealeases> {
               scrollDirection: Axis.horizontal,
               itemCount: results.length,
               itemBuilder: (context, index) {
+                final movie = results[index];
+                final isBookmarked = bookmarkStatus[index] ?? false;
                 return Padding(
                   padding: const EdgeInsets.only(right: 14),
-                  child: newRealeases(context, results[index]),
+                  child: newRealeases(context, movie, isBookmarked, index),
                 );
               },
             ),
@@ -68,54 +73,57 @@ class _NewRealeasesState extends State<NewRealeases> {
     );
   }
 
-  Widget newRealeases(BuildContext context, MovieDM result) {
+  Widget newRealeases(
+      BuildContext context, MovieDM result, bool isBookmarked, int index) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, MovieView.routeName, arguments: result);
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.23,
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Center(
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        'https://image.tmdb.org/t/p/w500${result.posterPath ?? ''}',
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    alignment: Alignment.center,
-                    placeholder: (_, __) => const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.blue,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          'https://image.tmdb.org/t/p/w500${result.posterPath ?? ''}',
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      alignment: Alignment.center,
+                      placeholder: (_, __) => const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.blue,
+                        ),
+                      ),
+                      errorWidget: (_, __, ___) => const Icon(
+                        Icons.image_not_supported_outlined,
+                        color: Colors.red,
                       ),
                     ),
-                    errorWidget: (_, __, ___) => const Icon(
-                      Icons.image_not_supported_outlined,
-                      color: Colors.red,
-                    ),
                   ),
-                ),
-                buildIcon(result), // Pass the movie to buildIcon()
-              ],
+                  buildIcon(index),
+                ],
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
 
-  Positioned buildIcon(MovieDM movie) {
+  Positioned buildIcon(int index) {
     return Positioned(
       right: 65,
       bottom: 110,
       child: InkWell(
         onTap: () {
-          toggleBookmark(movie);
+          toggleBookmark(index);
         },
-        child: isBookmarked
+        child: bookmarkStatus[index] ?? false
             ? const Icon(
                 Icons.bookmark_add,
                 color: AppColors.selectIcon,
@@ -128,12 +136,13 @@ class _NewRealeasesState extends State<NewRealeases> {
     );
   }
 
-  void toggleBookmark(MovieDM movie) {
+  void toggleBookmark(int index) {
     setState(() {
-      isBookmarked = !isBookmarked;
-
-      if (isBookmarked) {
-        FirebaseUtils.addFilmToFirestore(movie.toJson()).then((value) {
+      bookmarkStatus.update(index, (value) => !(value ?? false),
+          ifAbsent: () => true);
+      final movie = results?[index];
+      if (bookmarkStatus[index] ?? false) {
+        FirebaseUtils.addFilmToFirestore(movie!.toJson()).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Film Added Successfully to Watchlist.'),
@@ -148,7 +157,7 @@ class _NewRealeasesState extends State<NewRealeases> {
           );
         });
       } else {
-        String filmTitle = movie.title ?? "";
+        String filmTitle = movie?.title ?? "";
         FirebaseUtils.getFilmId(filmTitle).then((filmId) {
           if (filmId != null) {
             FirebaseUtils.deleteFilm(filmId).then((value) {

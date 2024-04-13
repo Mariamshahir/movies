@@ -9,7 +9,7 @@ import 'package:test_movies/widgets/movie_details_widget/movie_view_widget.dart'
 class PoplerItems extends StatefulWidget {
   final MovieDM result;
 
-  const PoplerItems({super.key, required this.result});
+  const PoplerItems({Key? key, required this.result}) : super(key: key);
 
   @override
   State<PoplerItems> createState() => _PoplerItemsState();
@@ -17,6 +17,7 @@ class PoplerItems extends StatefulWidget {
 
 class _PoplerItemsState extends State<PoplerItems> {
   bool isBookmarked = false;
+  Map<int, bool> bookmarkStatus = {};
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,7 @@ class _PoplerItemsState extends State<PoplerItems> {
                           ),
                         ),
                       ),
-                      buildIcon(widget.result),
+                      buildIcon(),
                     ],
                   ),
                   const SizedBox(
@@ -98,20 +99,17 @@ class _PoplerItemsState extends State<PoplerItems> {
     );
   }
 
-  Positioned buildIcon(MovieDM movie) {
+  Positioned buildIcon() {
     return Positioned(
       right: 90,
       bottom: 150,
       child: InkWell(
         onTap: () {
-          toggleBookmark(movie);
+          toggleBookmark();
         },
-        child: isBookmarked
-            ? const Icon(
-                Icons.bookmark_add,
-                color: AppColors.selectIcon,
-                size: 30,
-              )
+        child: bookmarkStatus[widget.result.id] ?? false
+            ? const Icon(Icons.bookmark_add,
+                color: AppColors.selectIcon, size: 30)
             : const Icon(
                 Icons.bookmark_add,
                 color: AppColors.bookMark,
@@ -121,12 +119,16 @@ class _PoplerItemsState extends State<PoplerItems> {
     );
   }
 
-  void toggleBookmark(MovieDM movie) {
+  void toggleBookmark() {
     setState(() {
-      isBookmarked = !isBookmarked;
+      bookmarkStatus.update(
+        widget.result.id!,
+        (value) => !(value ?? false),
+        ifAbsent: () => true,
+      ); // Toggle bookmark status for the specific index
 
-      if (isBookmarked) {
-        FirebaseUtils.addFilmToFirestore(movie.toJson()).then((value) {
+      if (bookmarkStatus[widget.result.id] ?? false) {
+        FirebaseUtils.addFilmToFirestore(widget.result.toJson()).then((value) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Film Added Successfully to Watchlist.'),
@@ -141,7 +143,7 @@ class _PoplerItemsState extends State<PoplerItems> {
           );
         });
       } else {
-        String filmTitle = movie.title ?? "";
+        String filmTitle = widget.result.title ?? "";
         FirebaseUtils.getFilmId(filmTitle).then((filmId) {
           if (filmId != null) {
             FirebaseUtils.deleteFilm(filmId).then((value) {
