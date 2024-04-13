@@ -1,6 +1,7 @@
 class Film {
   static const String collectionName = "film";
   late String title;
+  late int id;
   late String originalTitle;
   late String backdropPath;
   late String releaseDate;
@@ -11,6 +12,7 @@ class Film {
     required this.originalTitle,
     required this.releaseDate,
     required this.title,
+    required this.id,
     this.video = false,
   });
 
@@ -19,6 +21,7 @@ class Film {
     originalTitle = json['original_title'];
     releaseDate = json['release_date'];
     title = json['title'];
+    id = json['id'];
     video = json['is_bookmarked'] ?? false;
   }
 
@@ -29,23 +32,8 @@ class Film {
     data['release_date'] = releaseDate;
     data['title'] = title;
     data['is_bookmarked'] = video;
+    data['id'] = id;
     return data;
   }
 
-  // static Future<List<Film>> getFilmsFromFirestore() async {
-  //   try {
-  //     QuerySnapshot querySnapshot =
-  //     await FirebaseFirestore.instance.collection(collectionName).get();
-  //
-  //     List<Film> films = querySnapshot.docs.map((doc) {
-  //       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-  //       return Film.fromJson(data);
-  //     }).toList();
-  //
-  //     return films;
-  //   } catch (e) {
-  //     print('Error fetching films from Firestore: $e');
-  //     throw Exception('Failed to fetch films from Firestore');
-  //   }
-  // }
 }

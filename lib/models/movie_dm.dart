@@ -17,7 +17,7 @@ class MovieDM {
   bool? adult;
   String? backdropPath;
   List<num>? genreIds;
-  num? id;
+  int? id;
   String? originalLanguage;
   String? originalTitle;
   String? overview;
@@ -31,19 +31,19 @@ class MovieDM {
 
   MovieDM(
       {this.id,
-        this.adult,
-        this.backdropPath,
-        this.originalLanguage,
-        this.originalTitle,
-        this.overview,
-        this.popularity,
-        this.posterPath,
-        this.video,
-        this.voteAverage,
-        this.voteCount,
-        this.title,
-        this.genreIds,
-        this.releaseDate});
+      this.adult,
+      this.backdropPath,
+      this.originalLanguage,
+      this.originalTitle,
+      this.overview,
+      this.popularity,
+      this.posterPath,
+      this.video,
+      this.voteAverage,
+      this.voteCount,
+      this.title,
+      this.genreIds,
+      this.releaseDate});
 
   MovieDM.fromJson(dynamic json) {
     adult = json['adult'];
