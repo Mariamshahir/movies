@@ -125,7 +125,7 @@ class _PoplerItemsState extends State<PoplerItems> {
         widget.result.id!,
         (value) => !(value ?? false),
         ifAbsent: () => true,
-      ); // Toggle bookmark status for the specific index
+      );
 
       if (bookmarkStatus[widget.result.id] ?? false) {
         FirebaseUtils.addFilmToFirestore(widget.result.toJson()).then((value) {
