@@ -10,9 +10,9 @@ import 'package:test_movies/widgets/lodding_app.dart';
 import 'package:test_movies/widgets/movie_details_widget/movie_view_widget.dart';
 
 class WatchListTab extends StatefulWidget {
-  final MovieDM? result;
+  final MovieDM?   result;
 
-  const WatchListTab({Key? key, this.result}) : super(key: key);
+  const WatchListTab({Key? key, this.result,}) : super(key: key);
 
   @override
   State<WatchListTab> createState() => _WatchListTabState();
