@@ -56,7 +56,7 @@ class BrowseWidget extends StatelessWidget {
   }
 
   Widget _buildItem(BuildContext context, MovieDM result) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, MovieView.routeName, arguments: result);
       },
