@@ -70,7 +70,7 @@ class _SearchHomeState extends State<SearchHome> {
         ),
         body: widget.selectedWidget == true
             ? localMoviesIcon()
-            : SearchListView(searchResults: moviesSearchResults));
+            : SearchListView(movie: moviesSearchResults));
   }
 
   Widget localMoviesIcon() {
@@ -94,7 +94,7 @@ class _SearchHomeState extends State<SearchHome> {
       }
     }
 
-    SearchListView(searchResults: moviesSearchResults);
+    SearchListView(movie: moviesSearchResults);
     setState(() {});
     print("==========================================");
     print(widget.allMovies);
