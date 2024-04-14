@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
-import 'package:test_movies/models/film.dart';
+import 'package:test_movies/models/movie_dm.dart';
 
 class FirebaseUtils {
   static CollectionReference getFilmCollection() {
     return FirebaseFirestore.instance.collection('films');
   }
 
-  static Future<void> deleteFilm(String id) async {
+  static Future<void> deleteFilm(String movieid) async {
     try {
-      await getFilmCollection().doc(id).delete();
+      await getFilmCollection().doc(movieid).delete();
       print('Film deleted successfully');
     } catch (e) {
       print('Error deleting film: $e');
@@ -98,14 +98,14 @@ class FirebaseUtils {
     }
   }
 
-  static Future<List<Film>> getAllMoviesFromFirestore() async {
+  static Future<List<MovieDM>> getAllMoviesFromFirestore() async {
     try {
       QuerySnapshot querySnapshot = await getFilmCollection().get();
 
-      List<Film> movies = querySnapshot.docs.map((doc) {
+      List<MovieDM> movies = querySnapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         data['id'] = doc.id;
-        return Film.fromJson(data);
+        return MovieDM.fromJson(data);
       }).toList();
 
       return movies;
@@ -120,13 +120,8 @@ class FirebaseUtils {
     CollectionReference filmsCollection = getFilmCollection();
 
     // Add the film data to Firestore and get the reference
-    DocumentReference newDocRef = await filmsCollection.add(filmData);
-
-    // Update the document with its ID
-    await newDocRef.update({
-      'id': newDocRef.id,
-    });
-
-    return newDocRef;
+    DocumentReference doc = filmsCollection.doc(filmData["id"].toString());
+    doc.set(filmData);
+    return doc;
   }
 }
