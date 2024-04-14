@@ -49,7 +49,7 @@ class MovieDM {
     adult = json['adult'];
     backdropPath = json['backdrop_path'];
     genreIds = json['genre_ids'] != null ? json['genre_ids'].cast<num>() : [];
-    id = json['id'];
+    id = json['id'] is int ? json['id'] : int.parse(json['id']);
     originalLanguage = json['original_language'];
     originalTitle = json['original_title'];
     overview = json['overview'];
