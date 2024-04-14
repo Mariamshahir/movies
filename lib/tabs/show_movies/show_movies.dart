@@ -48,6 +48,9 @@ class ShowMovies extends StatelessWidget {
     for (MovieDM result in resultsList) {
       MovieDM movie = MovieDM(
         id: result.id,
+          posterPath: "https://image.tmdb.org/t/p/original" + result.posterPath!,
+          overview: result.overview,
+          voteAverage: result.voteAverage,
           backdropPath: "https://image.tmdb.org/t/p/original" + result.backdropPath!,
           title: result.title!,
           releaseDate: result.releaseDate!,
