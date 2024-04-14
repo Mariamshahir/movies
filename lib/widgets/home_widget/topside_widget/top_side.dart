@@ -46,7 +46,7 @@ class _TopSideState extends State<TopSide> {
       items: populerList.map((result) => PoplerItems(result: result)).toList(),
       options: CarouselOptions(
         enlargeCenterPage: true,
-        autoPlay: false,
+        autoPlay: true,
         height: double.infinity,
         enableInfiniteScroll: true,
         autoPlayAnimationDuration: const Duration(milliseconds: 500),

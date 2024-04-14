@@ -29,19 +29,24 @@ class _PoplerItemsState extends State<PoplerItems> {
       child: Container(
         child: Stack(
           children: [
-            CachedNetworkImage(
-              imageUrl:
-                  'https://image.tmdb.org/t/p/w500${widget.result.backdropPath ?? ''}',
-              fit: BoxFit.cover,
-              placeholder: (_, __) => const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.blue,
+            Stack(
+              children: [
+                CachedNetworkImage(
+                  imageUrl:
+                      'https://image.tmdb.org/t/p/w500${widget.result.backdropPath ?? ''}',
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) => const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  errorWidget: (_, __, ___) => const Icon(
+                    Icons.image_not_supported_outlined,
+                    color: Colors.red,
+                  ),
                 ),
-              ),
-              errorWidget: (_, __, ___) => const Icon(
-                Icons.image_not_supported_outlined,
-                color: Colors.red,
-              ),
+                const Center(child: Icon(Icons.play_circle,color: AppColors.white,size: 50,))
+              ],
             ),
             Positioned(
               left: 10,
