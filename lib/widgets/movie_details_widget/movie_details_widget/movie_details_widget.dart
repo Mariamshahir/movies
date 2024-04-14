@@ -59,23 +59,31 @@ class _MovieDetailsState extends State<MovieDetails> {
           children: [
             Stack(
               children: [
-                CachedNetworkImage(
-                  imageUrl:
-                      'https://image.tmdb.org/t/p/w500${movie.backdropPath ?? ''}',
-                  fit: BoxFit.cover,
-                  placeholder: (_, __) => const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.blue,
+                Hero(
+                  tag: 'movie_poster_${movie.id}',
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        'https://image.tmdb.org/t/p/w500${movie.backdropPath ?? ''}',
+                    fit: BoxFit.cover,
+                    placeholder: (_, __) => const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.blue,
+                      ),
+                    ),
+                    errorWidget: (_, __, ___) => const Icon(
+                      Icons.image_not_supported_outlined,
+                      color: Colors.red,
                     ),
                   ),
-                  errorWidget: (_, __, ___) => const Icon(
-                    Icons.image_not_supported_outlined,
-                    color: Colors.red,
-                  ),
                 ),
-                const Center(child: Padding(
+                const Center(
+                    child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 75),
-                  child: Icon(Icons.play_circle,color: AppColors.white,size: 60,),
+                  child: Icon(
+                    Icons.play_circle,
+                    color: AppColors.white,
+                    size: 60,
+                  ),
                 ))
               ],
             ),

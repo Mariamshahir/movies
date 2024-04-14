@@ -74,45 +74,50 @@ class _MoreLikeThisSectionState extends State<MoreLikeThisSection> {
   }
 
   Widget moreLike(BuildContext context, MovieDM result, int index) {
+    String heroTag = 'more_like_${result.id}';
+
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, MovieView.routeName, arguments: result);
       },
-      child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: Color(0xff707070),
-        ),
-        width: MediaQuery.of(context).size.width * 0.22,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(6)),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          'https://image.tmdb.org/t/p/w500${result.posterPath ?? ''}',
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      alignment: Alignment.center,
-                      placeholder: (_, __) => const Center(
-                        child: CircularProgressIndicator(color: Colors.blue),
-                      ),
-                      errorWidget: (_, __, ___) => const Icon(
-                        Icons.image_not_supported_outlined,
-                        color: Colors.red,
+      child: Hero(
+        tag: heroTag,
+        child: Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            color: Color(0xff707070),
+          ),
+          width: MediaQuery.of(context).size.width * 0.22,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(6)),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            'https://image.tmdb.org/t/p/w500${result.posterPath ?? ''}',
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        alignment: Alignment.center,
+                        placeholder: (_, __) => const Center(
+                          child: CircularProgressIndicator(color: Colors.blue),
+                        ),
+                        errorWidget: (_, __, ___) => const Icon(
+                          Icons.image_not_supported_outlined,
+                          color: Colors.red,
+                        ),
                       ),
                     ),
-                  ),
-                  buildIcon(index),
-                ],
+                    buildIcon(index),
+                  ],
+                ),
               ),
-            ),
-            ItemsRecommended(result: result),
-          ],
+              ItemsRecommended(result: result),
+            ],
+          ),
         ),
       ),
     );
