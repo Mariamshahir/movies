@@ -9,10 +9,10 @@ import 'package:test_movies/widgets/app_error.dart';
 import 'package:test_movies/widgets/lodding_app.dart';
 import 'package:test_movies/widgets/movie_details_widget/movie_view_widget.dart';
 
-class WatchListTab extends StatefulWidget {
-  final MovieDM?   result;
 
-  const WatchListTab({Key? key, this.result,}) : super(key: key);
+class WatchListTab extends StatefulWidget {
+
+  const WatchListTab({Key? key}) : super(key: key);
 
   @override
   State<WatchListTab> createState() => _WatchListTabState();
@@ -31,14 +31,14 @@ class _WatchListTabState extends State<WatchListTab> {
           return const AppError(
               error: "Something went wrong. Please try again later.");
         } else {
-          final films = snapshot.data!.docs;
-          return listWatchList(films);
+          final movies = snapshot.data!.docs;
+          return listWatchList(movies);
         }
       },
     );
   }
 
-  Widget listWatchList(List<QueryDocumentSnapshot<Object?>> films) {
+  Widget listWatchList(List<QueryDocumentSnapshot<Object?>> movies) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 17),
       child: Column(
@@ -50,7 +50,7 @@ class _WatchListTabState extends State<WatchListTab> {
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: films.length,
+              itemCount: movies.length,
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
                   color: AppColors.divider,
@@ -59,10 +59,10 @@ class _WatchListTabState extends State<WatchListTab> {
                 );
               },
               itemBuilder: (context, index) {
-                final film = films[index].data() as Map<String, dynamic>;
+                final movie = movies[index].data() as Map<String, dynamic>;
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: watchListWidget(film, context),
+                  child: watchListWidget(movie, context),
                 );
               },
             ),
@@ -72,11 +72,13 @@ class _WatchListTabState extends State<WatchListTab> {
     );
   }
 
-  Widget watchListWidget(Map<String, dynamic> film, BuildContext context) {
+  Widget watchListWidget(Map<String, dynamic> movie, BuildContext context) {
     return InkWell(
       onTap: () {
+        // print("")
+        print("film: ${movie["id"]}");
         Navigator.pushNamed(context, MovieView.routeName,
-            arguments: widget.result);
+            arguments: MovieDM.fromJson(movie));
       },
 
       child: Column(
@@ -87,7 +89,7 @@ class _WatchListTabState extends State<WatchListTab> {
                 children: [
                   CachedNetworkImage(
                     imageUrl:
-                    "https://image.tmdb.org/t/p/w500${film['backdrop_path']}",
+                    "https://image.tmdb.org/t/p/w500${movie['backdrop_path']}",
                     width: MediaQuery.of(context).size.width * 0.5,
                     height: MediaQuery.of(context).size.height * 0.12,
                     placeholder: (context, url) => const Center(
@@ -105,7 +107,7 @@ class _WatchListTabState extends State<WatchListTab> {
                     bottom: 82,
                     child: InkWell(
                       onTap: () {
-                        FirebaseUtils.deleteFilm(film['id'].toString());
+                        FirebaseUtils.deleteFilm(movie['id'].toString());
                       },
                       child: const Icon(
                         Icons.bookmark_add,
@@ -118,15 +120,16 @@ class _WatchListTabState extends State<WatchListTab> {
               ),
               const SizedBox(width: 5,),
               Expanded(
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      film['title'] ?? '',
+                      movie['title'] ?? '',
                       style: AppTheme.movieTitle,
                     ),
-                    Text(film['release_date'] ?? '', style: AppTheme.time),
-                    Text(film['original_title'] ?? '', style: AppTheme.time),
+                    Text(movie['release_date'] ?? '', style: AppTheme.time),
+                    Text(movie['original_title'] ?? '', style: AppTheme.time),
                   ],
                 ),
               )
