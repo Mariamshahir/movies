@@ -59,21 +59,18 @@ class _MovieDetailsState extends State<MovieDetails> {
           children: [
             Stack(
               children: [
-                Hero(
-                  tag: 'movie_poster_${movie.id}',
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        'https://image.tmdb.org/t/p/w500${movie.backdropPath ?? ''}',
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.blue,
-                      ),
+                CachedNetworkImage(
+                  imageUrl:
+                      'https://image.tmdb.org/t/p/w500${movie.backdropPath ?? ''}',
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) => const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
                     ),
-                    errorWidget: (_, __, ___) => const Icon(
-                      Icons.image_not_supported_outlined,
-                      color: Colors.red,
-                    ),
+                  ),
+                  errorWidget: (_, __, ___) => const Icon(
+                    Icons.image_not_supported_outlined,
+                    color: Colors.red,
                   ),
                 ),
                 const Center(
@@ -193,15 +190,21 @@ class _MovieDetailsState extends State<MovieDetails> {
           toggleBookmark(movie);
         },
         child: isBookmarked
-            ? const Icon(
-                Icons.bookmark_add,
-                color: AppColors.selectIcon,
-                size: 30,
+            ? const Hero(
+                tag: 'bookmark_icon',
+                child: Icon(
+                  Icons.bookmark_add,
+                  color: AppColors.selectIcon,
+                  size: 30,
+                ),
               )
-            : const Icon(
-                Icons.bookmark_add,
-                color: AppColors.bookMark,
-                size: 30,
+            : const Hero(
+                tag: 'bookmark_icon',
+                child: Icon(
+                  Icons.bookmark_add,
+                  color: AppColors.bookMark,
+                  size: 30,
+                ),
               ),
       ),
     );
